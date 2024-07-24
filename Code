@@ -1,0 +1,99 @@
+import json
+from datetime import datetime
+
+# File to store expenses
+FILENAME = "expenses.json"
+
+# Function to load expenses from JSON file
+def load_expenses():
+    try:
+        with open(FILENAME, 'r') as file:
+            return json.load(file)
+    except FileNotFoundError:
+        return []
+
+# Function to save expenses to JSON file
+def save_expenses(expenses):
+    with open(FILENAME, 'w') as file:
+        json.dump(expenses, file, indent=4)
+
+# Function to add a new expense
+def add_expense(date, amount, category, description):
+    expenses = load_expenses()
+    expense = {
+        "date": date,
+        "amount": amount,
+        "category": category,
+        "description": description
+    }
+    expenses.append(expense)
+    save_expenses(expenses)
+    print("Expense added successfully!")
+
+# Function to view all expenses
+def view_expenses():
+    expenses = load_expenses()
+    for expense in expenses:
+        print(f"Date: {expense['date']}, Amount: {expense['amount']}, Category: {expense['category']}, Description: {expense['description']}")
+
+# Function to edit an expense
+def edit_expense(index, date, amount, category, description):
+    expenses = load_expenses()
+    if 0 <= index < len(expenses):
+        expenses[index] = {
+            "date": date,
+            "amount": amount,
+            "category": category,
+            "description": description
+        }
+        save_expenses(expenses)
+        print("Expense updated successfully!")
+    else:
+        print("Invalid index!")
+
+# Function to delete an expense
+def delete_expense(index):
+    expenses = load_expenses()
+    if 0 <= index < len(expenses):
+        expenses.pop(index)
+        save_expenses(expenses)
+        print("Expense deleted successfully!")
+    else:
+        print("Invalid index!")
+
+# Main function
+def main():
+    while True:
+        print("\nExpense Tracker")
+        print("1. Add Expense")
+        print("2. View Expenses")
+        print("3. Edit Expense")
+        print("4. Delete Expense")
+        print("5. Exit")
+        choice = input("Enter your choice: ")
+
+        if choice == '1':
+            date = input("Enter date (YYYY-MM-DD): ")
+            amount = float(input("Enter amount: "))
+            category = input("Enter category: ")
+            description = input("Enter description: ")
+            add_expense(date, amount, category, description)
+        elif choice == '2':
+            view_expenses()
+        elif choice == '3':
+            index = int(input("Enter index of expense to edit: "))
+            date = input("Enter new date (YYYY-MM-DD): ")
+            amount = float(input("Enter new amount: "))
+            category = input("Enter new category: ")
+            description = input("Enter new description: ")
+            edit_expense(index, date, amount, category, description)
+        elif choice == '4':
+            index = int(input("Enter index of expense to delete: "))
+            delete_expense(index)
+        elif choice == '5':
+            break
+        else:
+            print("Invalid choice! Please try again.")
+
+if __name__ == "__main__":
+    main()
